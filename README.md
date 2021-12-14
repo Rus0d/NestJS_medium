@@ -28,6 +28,8 @@
 
 ## Installation
 
+Use NodeJS 14v.
+
 ```bash
 $ npm install
 ```
