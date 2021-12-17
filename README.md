@@ -40,9 +40,6 @@ $ npm install
 # development
 $ npm run start
 
-# watch mode
-$ npm run start:dev
-
 # production mode
 $ npm run start:prod
 ```
@@ -73,3 +70,47 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+## Postgres commands
+```bash
+# также можно запустить вручную:
+$ pg_ctl -D /usr/local/var/postgres start
+
+# перезагрузка PostgreSQL
+$ brew services restart postgresql
+
+# проверим пользователей:
+$ psql -l
+$ \l # если мы в postgres
+
+# посмотреть пользователей
+$ \du
+
+# открываем psql с пользователем postgres
+$ sudo -u postgres psql
+$ sudo psql -U rus -d postgres
+
+# создание bd
+$ create database <db name>;
+
+# удаление таблицы
+$ drop table  <table name>;
+
+# создание пользователя
+$ create user <user name> with encrypted password 'user password';
+
+# даем пользователю все привилегии
+$ grant all privileges on database <db name> to <user name>;
+
+# подклюситься к db
+$ \c <db name>;
+
+# отобразить существующие таблицы
+$ \dt;
+
+# отобразить существующие поля таблицы
+$ \d <table name>;
+
+# вставить значение в таблицу
+$ insert into <table name> (<column name>) values ('value');
+```
