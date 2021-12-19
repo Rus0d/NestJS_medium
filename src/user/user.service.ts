@@ -1,5 +1,5 @@
 import {Repository} from "typeorm";
-import {Injectable} from "@nestjs/common";
+import {HttpException, HttpStatus, Injectable} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
 import {sign} from "jsonwebtoken";
 
@@ -16,6 +16,16 @@ export class UserService {
     ) {}
 
     async createUser(crateUserDto: CreateUserDto): Promise<UserEntity> {
+        const userByEmail = await this.userRepository.findOne({
+            email: crateUserDto.email
+        });
+        const userByUsername = await this.userRepository.findOne({
+            username: crateUserDto.username
+        });
+        if (userByEmail || userByUsername) {
+            throw new HttpException("Email or user name are taken.", HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
         const newUser = new UserEntity();
         Object.assign(newUser, crateUserDto);
         return await this.userRepository.save(newUser);
