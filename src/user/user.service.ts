@@ -8,6 +8,7 @@ import {compare} from "bcrypt";
 import {JWT_SECRET} from "@app/config";
 import {CreateUserDto} from "@app/user/dto/createUser.dto";
 import {LoginUserDto} from "@app/user/dto/loginUser.dto";
+import {UpdateUserDto} from "@app/user/dto/updateUser.dto";
 import {UserEntity} from "@app/user/user.entity";
 import {UserResponseInterface} from "@app/user/types/userResponse.interface";
 
@@ -34,19 +35,33 @@ export class UserService {
         return await this.userRepository.save(newUser);
     }
 
-    async login(getUserDto: LoginUserDto): Promise<UserEntity> {
+    async login(loginUserDto: LoginUserDto): Promise<UserEntity> {
         const userByEmail = await this.userRepository.findOne({
-            email: getUserDto.email
+            email: loginUserDto.email
         }, {select: ["id", "username", "email", "bio", "image", "password"]});
         let match = false;
         if (userByEmail) {
-            match = await compare(getUserDto.password, userByEmail.password);
+            match = await compare(loginUserDto.password, userByEmail.password);
         }
         if (match) {
             delete userByEmail.password
             return userByEmail;
         }
         throw new HttpException("Wrong password or email", HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    async updateUser(userId: number, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+        const user = await this.findById(userId);
+
+        if (user.email !== updateUserDto.email && await this.userRepository.findOne({ email: updateUserDto.email })) {
+            throw new HttpException("Wrong email", HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        return await this.userRepository.save(Object.assign(user, updateUserDto));
+    }
+
+    findById(id: number): Promise<UserEntity> {
+        return this.userRepository.findOne({id});
     }
 
     generateJwt(user: UserEntity): string {
