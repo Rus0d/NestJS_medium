@@ -113,4 +113,10 @@ $ \d <table name>;
 
 # вставить значение в таблицу
 $ insert into <table name> (<column name>) values ('value');
+
+# активировать expanded display (select выводит таблицу в две колонки)
+$ \x
+
+# выбрать все записи в таблице articles
+$ select * from articles;
 ```
