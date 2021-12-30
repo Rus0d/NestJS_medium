@@ -7,6 +7,7 @@ import {ArticleEntity} from "@app/article/article.entity";
 import {UserEntity} from "@app/user/user.entity";
 import {CreateArticleDto} from "@app/article/dto/createArticle.dto";
 import {ArticleResponseInterface} from "@app/article/types/articleResponse.interface";
+import {UpdateArticleDto} from "@app/article/dto/updateArticle.dto";
 
 @Injectable()
 export class ArticleService {
@@ -32,14 +33,28 @@ export class ArticleService {
         return this.articleRepository.findOne({slug});
     }
 
-    async deleteArticle(slug: string, currentUser: number): Promise<DeleteResult> {
+    async updateArticle(slug: string, currentUserId: number, updateArticleDto: UpdateArticleDto): Promise<ArticleEntity> {
         const article = await this.findBySlug(slug);
 
         if(!article) {
             throw new HttpException("Article does not exist", HttpStatus.NOT_FOUND);
         }
 
-        if(article.author.id !== currentUser) {
+        if(article.author.id !== currentUserId) {
+            throw new HttpException("You are not an author", HttpStatus.FORBIDDEN);
+        }
+
+        return await this.articleRepository.save(Object.assign(article, updateArticleDto));
+    }
+
+    async deleteArticle(slug: string, currentUserId: number): Promise<DeleteResult> {
+        const article = await this.findBySlug(slug);
+
+        if(!article) {
+            throw new HttpException("Article does not exist", HttpStatus.NOT_FOUND);
+        }
+
+        if(article.author.id !== currentUserId) {
             throw new HttpException("You are not an author", HttpStatus.FORBIDDEN);
         }
 

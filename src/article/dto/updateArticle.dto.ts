@@ -1,17 +1,18 @@
-import {IsNotEmpty, IsString} from "class-validator";
+import {IsNotEmpty, IsOptional, IsString} from "class-validator";
 
-export class CreateArticleDto {
+export class UpdateArticleDto {
     @IsNotEmpty()
     @IsString()
+    @IsOptional()
     readonly title: string;
 
     @IsNotEmpty()
     @IsString()
+    @IsOptional()
     readonly description: string;
 
     @IsNotEmpty()
     @IsString()
+    @IsOptional()
     readonly body: string;
-
-    readonly tagList?: string[];
 }
