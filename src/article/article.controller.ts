@@ -1,4 +1,16 @@
-import {Body, Controller, Get, Post, Param, UseGuards, Delete, Put, UsePipes, ValidationPipe} from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Get,
+    Post,
+    Param,
+    UseGuards,
+    Delete,
+    Put,
+    UsePipes,
+    ValidationPipe,
+    Query
+} from "@nestjs/common";
 
 import {ArticleService} from "@app/article/article.service";
 import {AuthGuard} from "@app/user/guards/auth.guard";
@@ -7,10 +19,19 @@ import {UserEntity} from "@app/user/user.entity";
 import {CreateArticleDto} from "@app/article/dto/createArticle.dto";
 import {ArticleResponseInterface} from "@app/article/types/articleResponse.interface";
 import {UpdateArticleDto} from "@app/article/dto/updateArticle.dto";
+import {ArticlesResponseInterface} from "@app/article/types/articlesResponse.interface";
 
 @Controller("articles")
 export class ArticleController {
     constructor(private readonly articleService: ArticleService) {}
+
+    @Get()
+    async findAll (
+        @User("id") currentUserId: number,
+        @Query() query: any
+    ): Promise<ArticlesResponseInterface> {
+        return await this.articleService.findAll(currentUserId, query);
+    }
 
     @Post()
     @UseGuards(AuthGuard)
