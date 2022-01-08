@@ -26,11 +26,20 @@ export class ArticleController {
     constructor(private readonly articleService: ArticleService) {}
 
     @Get()
-    async findAll (
+    async findAll(
         @User("id") currentUserId: number,
         @Query() query: any
     ): Promise<ArticlesResponseInterface> {
         return await this.articleService.findAll(currentUserId, query);
+    }
+
+    @Get("feed")
+    @UseGuards(AuthGuard)
+    async getFeed(
+      @User("id") currentUserId: number,
+      @Query() query: any
+    ): Promise<ArticlesResponseInterface> {
+        return await this.articleService.getFeed(currentUserId, query);
     }
 
     @Post()
